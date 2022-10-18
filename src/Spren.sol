@@ -3,6 +3,7 @@ pragma solidity ^0.8.13;
 
 contract Spren {
     address immutable stormFather;
+
     constructor(address _stormFather) {
         stormFather = _stormFather;
     }

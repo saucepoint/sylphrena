@@ -8,7 +8,7 @@ contract Stormfather {
     mapping(uint256 => address) private oathBreakers;
     uint256 private oathBreakerCount;
 
-    uint256 constant public amount = 0.01 ether;
+    uint256 public constant amount = 0.01 ether;
 
     function rng(uint256 seed) public view returns (uint256) {
         return uint256(keccak256(abi.encodePacked(block.timestamp, block.difficulty, seed)));
@@ -16,9 +16,9 @@ contract Stormfather {
 
     function _getAddress(uint256 salt) private view returns (address) {
         bytes memory bytecode = type(Spren).creationCode;
-        return address(uint160(uint256(keccak256(
-                abi.encodePacked(bytes1(0xff), address(this), salt, keccak256(bytecode))
-        ))));
+        return address(
+            uint160(uint256(keccak256(abi.encodePacked(bytes1(0xff), address(this), salt, keccak256(bytecode)))))
+        );
     }
 
     function _pop(uint256 salt) private returns (address popped) {
@@ -26,7 +26,9 @@ contract Stormfather {
         popped = oathBreakers[num];
         oathBreakers[num] = oathBreakers[oathBreakerCount - 1];
         delete oathBreakers[oathBreakerCount];
-        unchecked { --oathBreakerCount; }
+        unchecked {
+            --oathBreakerCount;
+        }
     }
 
     /**
@@ -47,9 +49,10 @@ contract Stormfather {
         address spren = _getAddress(salt);
         require(address(spren).balance == amount, "invalid salt");
         oathBreakers[oathBreakerCount] = oathBreaker;
-        unchecked { ++oathBreakerCount; }
+        unchecked {
+            ++oathBreakerCount;
+        }
     }
-
 
     /**
      * Breaks the oath and sends the funds to a random oath breaker
@@ -64,6 +67,4 @@ contract Stormfather {
         require(address(spren).balance == amount, "invalid salt");
         Spren(spren).unbond(_pop(salt));
     }
-
-
 }
