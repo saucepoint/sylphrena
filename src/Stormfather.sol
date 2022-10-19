@@ -19,6 +19,10 @@ contract Stormfather {
     // @dev: Possible to extend this into a mapping or an array to support different pools?
     uint256 public constant amount = 0.01 ether;
 
+    // ----------------------------------------------------------
+    // Primary (External) Functions
+    // ----------------------------------------------------------
+
     /**
      * @notice Get an EOA address to send funds to
      * @param seed uint256 any number to be used as a seed for pseudo RNG
@@ -57,7 +61,7 @@ contract Stormfather {
     }
 
     /**
-     * @notice Atomically deploys Spren to the EOA and self destructs it. Directs the funds to a random recipient (oathBreaker)
+     * @notice Atomically deploys Spren to the EOA and self-destructs it. Directs the funds to a random recipient (oathBreaker)
      * @param salt uint256 - the salt used in CREATE2 to deploy to a funded EOA. Should be provided from an off-chain source
      */
     function oathBreak(uint256 salt) external {
@@ -74,7 +78,7 @@ contract Stormfather {
     }
 
     // ----------------------------------------------------------
-    // Utility Functions
+    // Utility (Private) Functions
     // ----------------------------------------------------------
     /**
      * @notice Pseudo RNG
@@ -105,9 +109,20 @@ contract Stormfather {
      */
     function _pop() private returns (address popped) {
         uint256 num = _rng(uint256(keccak256(abi.encode(block.timestamp)))) % oathBreakerCount;
+        uint256 last;
+        unchecked {
+            last = oathBreakerCount - 1;
+        }
         popped = oathBreakers[num];
-        oathBreakers[num] = oathBreakers[oathBreakerCount - 1];
-        delete oathBreakers[oathBreakerCount];
+
+        // sanity check, might be overkill
+        require(popped != address(0x0), "null address");
+
+        oathBreakers[num] = oathBreakers[last];
+        
+        // this might use unnecessary gas, but for the sake of "privacy" lets clear it out
+        delete oathBreakers[last];
+
         unchecked {
             --oathBreakerCount;
         }
