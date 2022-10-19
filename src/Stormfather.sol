@@ -42,11 +42,13 @@ contract Stormfather {
      */
     function addRadiant(address radiant, uint256 salt) external {
         // TODO: verify caller has permission to the system, could a merkle proof work here?
+        // TODO: is there a way to handle permissions (and proper checks) without need of a salt?
 
         // TODO: should we be worried about collision here?
         require(!used[keccak256(abi.encodePacked(salt))], "already used");
 
         // mark the salt as used to prevent reusage attacks
+        // (use a hash to hide the salt)
         used[keccak256(abi.encodePacked(salt))] = true;
 
         // soft-check that the owner of the salt has provided funds to the escrow
@@ -73,6 +75,8 @@ contract Stormfather {
             spren := create2(0, add(0x20, _data), mload(_data), salt)
             if iszero(extcodesize(spren)) { revert(0, 0) }
         }
+        // @dev TODO: this introduces a footgun where funds are unrecoverable if the spren is under or over funded
+        // up to intreptation for how this should be handled
         require(address(spren).balance == amount, "invalid salt");
         Spren(spren).unbond(_pop());
     }
