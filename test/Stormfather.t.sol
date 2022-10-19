@@ -24,7 +24,7 @@ contract StormfatherTest is Test {
         assertEq(sent, true);
         assertEq(address(spren).balance, 0.01 ether);
 
-        stormfather.addOathBreaker(address(charlie), salt);
+        stormfather.addRadiant(address(charlie), salt);
 
         vm.prank(bob);
         stormfather.oathBreak(salt);
@@ -40,7 +40,7 @@ contract StormfatherTest is Test {
 
         address beef = address(0xbeef);
         vm.expectRevert("already used");
-        stormfather.addOathBreaker(beef, salt);
+        stormfather.addRadiant(beef, salt);
     }
 
     // cannot break an oath twice
@@ -71,7 +71,7 @@ contract StormfatherTest is Test {
         assertEq(sent, true);
         assertEq(address(spren).balance, 0.01 ether);
 
-        stormfather.addOathBreaker(address(charlie), salt);
+        stormfather.addRadiant(address(charlie), salt);
         return (spren, salt);
     }
 }

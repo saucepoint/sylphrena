@@ -6,7 +6,7 @@ import {Spren} from "./Spren.sol";
 contract Stormfather {
     // number of unpaid recipients
     uint256 private oathBreakerCount;
-    
+
     // an unordered list of recipients for the funds
     mapping(uint256 => address) private oathBreakers;
 
@@ -21,12 +21,11 @@ contract Stormfather {
 
     /**
      * @notice Get an EOA address to send funds to
+     * @param seed uint256 any number to be used as a seed for pseudo RNG
      */
     function spawn(uint256 seed) external view returns (address spren, uint256 salt) {
-        unchecked {
-            salt = _rng(seed);
-            spren = _getAddress(salt);
-        }
+        salt = _rng(seed);
+        spren = _getAddress(salt);
     }
 
     /**
@@ -34,8 +33,10 @@ contract Stormfather {
      * @dev TODO: Stronger permissions are required here. Anyone with a valid salt will
      * be able to register an address as a recipient. Attackers can recieve funds from
      * the escrow EOAs by registering their own address as a recipient.
+     * @param radiant address of a new recipient
+     * @param salt uint256, the salt returned by spawn(), which can deploy via CREATE2. also used as a soft-verification
      */
-    function addOathBreaker(address oathBreaker, uint256 salt) external {
+    function addRadiant(address radiant, uint256 salt) external {
         // TODO: verify caller has permission to the system, could a merkle proof work here?
 
         // TODO: should we be worried about collision here?
@@ -49,14 +50,15 @@ contract Stormfather {
         require(address(spren).balance == amount, "invalid salt");
 
         // register the recipient to be randomly chosen
-        oathBreakers[oathBreakerCount] = oathBreaker;
+        oathBreakers[oathBreakerCount] = radiant;
         unchecked {
             ++oathBreakerCount;
         }
     }
 
     /**
-     * Breaks the oath and sends the funds to a random oath breaker
+     * @notice Atomically deploys Spren to the EOA and self destructs it. Directs the funds to a random recipient (oathBreaker)
+     * @param salt uint256 - the salt used in CREATE2 to deploy to a funded EOA. Should be provided from an off-chain source
      */
     function oathBreak(uint256 salt) external {
         require(oathBreakerCount != 0, "no oaths");
@@ -74,19 +76,23 @@ contract Stormfather {
     // ----------------------------------------------------------
     // Utility Functions
     // ----------------------------------------------------------
+    /**
+     * @notice Pseudo RNG
+     * @param seed uint256 a random seed
+     */
     function _rng(uint256 seed) private view returns (uint256) {
         return uint256(keccak256(abi.encodePacked(block.timestamp, block.difficulty, block.coinbase, seed)));
     }
 
     /**
-     * @notice gets the bytecode of the spren contract. Required for create2 & deterministic address generation
+     * @notice gets the bytecode of the Spren contract. Required for create2 & deterministic address generation
      */
     function _getBytecode() private view returns (bytes memory) {
         return abi.encodePacked(type(Spren).creationCode, abi.encode(address(this)));
     }
 
     /**
-     * @notice Deterministically generate an EOA address which can be converted to a Spren contract
+     * @notice Deterministically generate an EOA address which can be upgraded to a Spren contract
      */
     function _getAddress(uint256 salt) private view returns (address) {
         return address(
