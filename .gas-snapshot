@@ -1,3 +1,5 @@
-StormfatherTest:testDoubleRegisterRevert() (gas: 122363)
+StormfatherTest:testDoubleRegisterRevert() (gas: 122474)
 StormfatherTest:testDoubleUnbondRevert() (gas: 8937393460516722795)
 StormfatherTest:testFlow() (gas: 213611)
+StormfatherTest:testFlow2() (gas: 384136)
+StormfatherTest:testFlowMany() (gas: 3978701)
