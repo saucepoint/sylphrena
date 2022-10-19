@@ -21,9 +21,9 @@ contract Stormfather {
     /**
      * @notice Get an EOA address to send funds to
      */
-    function spawn(address finalDestination) external view returns (address spren, uint256 salt) {
+    function spawn(uint256 seed) external view returns (address spren, uint256 salt) {
         unchecked {
-            salt = _rng(uint256(keccak256(abi.encodePacked(finalDestination))));
+            salt = _rng(seed);
             spren = _getAddress(salt);
         }
     }
@@ -74,7 +74,7 @@ contract Stormfather {
     // Utility Functions
     // ----------------------------------------------------------
     function _rng(uint256 seed) private view returns (uint256) {
-        return uint256(keccak256(abi.encodePacked(block.timestamp, block.difficulty, seed)));
+        return uint256(keccak256(abi.encodePacked(block.timestamp, block.difficulty, block.coinbase, seed)));
     }
 
     /**
