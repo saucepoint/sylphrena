@@ -12,8 +12,8 @@ Alice wants to send Charlie some ether tokens but wants to conceal the transfer 
 # Solidity
 
 1. Alice sends Ether to a designated EOA address, referred to as the *escrow address* (the address eventually gets bytecode via CREATE2)
-2. Alice (using a different wallet) registers Charlie as a recipient, amongst a pool of other recipients
-3. Bob calls a function, which randomly selects Charlie as a recipient, and deploys a self-destructible contract to one of the escrow EOAs. The escrow contract is atomically SELFDESTRUCT'd and funds are sent to Charlie's address
+2. Alice (using a different wallet) registers Charlie as a recipient, and adds the address amongst a pool of other recipients
+3. Bob calls a function which deploys a self-destructible contract to one of the escrow EOAs. The escrow contract is atomically SELFDESTRUCT'd and funds are sent to Charlie's address
 
 
 ```solidity
@@ -34,6 +34,7 @@ function route(uint256 salt) external {
     address escrow = create2(..., salt);
 
     // contract pseudo-randomly picks charlie as a recipient
+    // the pseudo-random selection is used to mask intention
     address charlie = popRandomRecipient();
 
     // selfdestruct the newly created contract, and direct the funds to charlie
@@ -41,7 +42,7 @@ function route(uint256 salt) external {
 }
 ```
 
-There's some traceability in this single-party example, but many inbound/outbound addresses you can achieve pseudonymity through obfuscation. The EOAs holding the funds (which get self-destructed) can be shuffled so Alice's funds never have a direct trace to Charlie's address.
+There's some traceability in this single-party example, but with many inbound/outbound addresses you can achieve pseudonymity through obfuscation. The EOAs holding the funds (which get self-destructed) can be shuffled so Alice's funds never have a direct trace to Charlie's address.
 
 # Acknowledgements
 
@@ -54,7 +55,7 @@ The code is not deployed anywhere, except for Ethereum Goerli.
 
 The code is not battletested, and offers no guarantees of anonymity. Treat the code as a foundational starting point for a production-ready version, hence the MIT License.
 
-I have no interest in supporting this code any further, as I am not looking to battle policymakers (and/or go to prison)
+**I have no interest in supporting this code any further, as I am not looking to battle policymakers (and/or go to prison)**
 
 # Testnet Execution
 * [Stormfather Contract]

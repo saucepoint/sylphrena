@@ -4,17 +4,18 @@ pragma solidity ^0.8.13;
 import {Spren} from "./Spren.sol";
 
 contract Stormfather {
+    // number of unpaid recipients
     uint256 private oathBreakerCount;
     
-    // an unordered list of destinations for the funds
+    // an unordered list of recipients for the funds
     mapping(uint256 => address) private oathBreakers;
 
     // tracks if a salt has been used to register an oathbreaker
-    // prevents reusage attacks
+    // (prevents reusage attacks)
     mapping(bytes32 => bool) private used;
 
-    // Exact amount that must be sent to the Spren in order to register an oathbreaker
-    // More funds can be sent after registration, unsure if stronger restrictions required
+    // Exact amount that must be held by the Spren in order to register and pay out
+    // !! More funds CANNOT be sent after registration !!
     // @dev: Possible to extend this into a mapping or an array to support different pools?
     uint256 public constant amount = 0.01 ether;
 
