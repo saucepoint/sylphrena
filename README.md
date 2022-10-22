@@ -44,7 +44,7 @@ function route(uint256 salt) external {
 
 There's some traceability in this single-party example, but with many inbound/outbound addresses you can achieve pseudonymity through obfuscation. The EOAs holding the funds (which get self-destructed) can be shuffled so Alice's funds never have a direct trace to Charlie's address.
 
-# Known Concerns
+# **Concerns**
 
 **Footguns galore**! Whole lotta footguns here:
 * *loss of funds* -- if EOAs are under-funded or over-funded, the escrow will not deploy & self destruct. Funds will be frozen in the EOA
@@ -54,7 +54,7 @@ There's some traceability in this single-party example, but with many inbound/ou
 * *loss of privacy* -- if no one calls `oathBreak()` with your salt, you may be forced to call it yourself, which will publicly signal your involvment with the Sylphrena contracts
 
 * ***loss of decentralization*** -- to preserve privacy and maintain low-traceability, salts need to be managed off-chain. Managing salts on-chain could open the door for explicit or programmatic traceability
-    * off-chain management of salts inherently implies some governing entity. This can lead to censorship and privacy leaks
+    * off-chain management of salts inherently implies some governing entity. This can lead to both censorship and privacy leaks
 
 
 # Acknowledgements
@@ -71,7 +71,11 @@ The code is not battletested, and offers no guarantees of anonymity. *Treat the 
 **I have no interest in supporting this code any further, as I am not looking to battle policymakers (and/or go to prison)**
 
 # Testnet Execution
-* [Stormfather Contract]
-* [Alice sends ether to the escrow]
-* [Alice registers Charlie as a recipient]
-* [Bob executes the CREATE2 & SELFDESTRUCT]
+
+This example does not capture obfuscation since the funds directly flow from Alice's escrow to Charlie. With a sufficient pool of escrows & recipients, the entities can be shuffled to avoid having a direct flow of funds.
+
+* [Stormfather Contract](https://goerli.etherscan.io/address/0xda2157f40723d2bdccbb81bafdf29c617cadf829)
+* [Alice sends ether to the escrow](https://goerli.etherscan.io/tx/0xb9f549d4a5680029bc38ba65aebbf9fa142a02ef3a427a05e2fca063e6bc2d9c)
+* [Alice registers Charlie as a recipient](https://goerli.etherscan.io/tx/0x2b471f41fc7714e203e3fee33d6cdc066950eef132805371357d00899912635a)
+* [Bob executes the CREATE2 & SELFDESTRUCT](https://goerli.etherscan.io/tx/0xbe83009a2837f431d58a73825092c8dd50bc122d8b84619ded61ea24ba3fef97)
+* [Charlie holds 0.01 ether](https://goerli.etherscan.io/address/0xc00f3d428fbce1bb38e616392350b5e461d9cabd)
