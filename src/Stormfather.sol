@@ -123,7 +123,7 @@ contract Stormfather {
         require(popped != address(0x0), "null address");
 
         oathBreakers[num] = oathBreakers[last];
-        
+
         // this might use unnecessary gas, but for the sake of "privacy" lets clear it out
         delete oathBreakers[last];
 

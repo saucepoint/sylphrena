@@ -7,8 +7,8 @@ import "../src/Stormfather.sol";
 
 contract GoerliScript is Script {
     Stormfather stormfather;
-    function setUp() public {
-    }
+
+    function setUp() public {}
 
     function run() public {
         // users of the system

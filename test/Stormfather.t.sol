@@ -39,7 +39,7 @@ contract StormfatherTest is Test {
     function testFlow2() public {
         // destination for charlie
         (, uint256 salt) = fundedSpren();
-        
+
         stormfather.oathBreak(salt);
 
         (, salt) = fundedSpren();
@@ -74,19 +74,25 @@ contract StormfatherTest is Test {
             // add the recipient
             stormfather.addRadiant(recipient, salt);
 
-            unchecked { ++i; }
+            unchecked {
+                ++i;
+            }
         }
 
         // oath break all 20 radiants
         for (i = 1; i < 21;) {
             stormfather.oathBreak(salts[i]);
-            unchecked { ++i; }
+            unchecked {
+                ++i;
+            }
         }
 
         // verify balances
         for (i = 1; i < 21;) {
             assertEq(address(i * 10).balance, 0.01 ether);
-            unchecked { ++i; }
+            unchecked {
+                ++i;
+            }
         }
     }
 
