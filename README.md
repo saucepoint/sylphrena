@@ -1,7 +1,7 @@
 # sylphrena
-Pseudonymous, trustless transfers of Ether tokens with low-traceability by using `create2` &amp; `selfdestruct`
+Pseudonymous transfers of Ether tokens with low-traceability by using `create2` &amp; `selfdestruct`
 
-Named after the spren of the Stormlight Archive series. Functions intentionally (but poorly) lore-driven to encourage stronger understanding of smart contract behavior.
+Named after the spren from the Stormlight Archive series. Functions are intentionally (but poorly) lore-driven to encourage stronger understanding of smart contract behavior.
 
 ---
 
