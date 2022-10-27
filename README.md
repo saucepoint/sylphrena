@@ -13,8 +13,13 @@ Alice wants to send Charlie some ether tokens but wants to conceal the transfer 
 
 1. Alice sends Ether to a designated EOA address, referred to as the *escrow address* (the address eventually gets bytecode via CREATE2)
 2. Alice (using a different wallet) registers Charlie as a recipient, and adds his address to the pool of other recipients
-3. Bob, *permissionlessly*, calls a function which deploys a self-destructible contract to one of the escrow EOAs. The escrow contract is atomically SELFDESTRUCT'd and funds are sent to Charlie's address
+3. Bob, *permissionlessly*, calls a function which deploys a self-destructible contract to one of the **many** escrow EOAs. The escrow contract is atomically SELFDESTRUCT'd and funds are sent to Charlie's address
+    * for pseudonymity to be successful, there needs to be many inbound/outbound parties such that salts and the CREATE2 addresses can be *mixed*
+    * shuffling the salts (off-chain) will obfuscate the origin of the funds
+    * for example: Alice intends to pay Charlie and Bob intends to pay Ed
+    * Alice's funds actually flow to Ed, and Bob's funds flow to Charlie
 
+The largest privacy leak, at the moment, is publicly using salts to register recipients. These salts will reveal the original funder (and their intended recipient)
 
 ```solidity
 // obtain an address, that initially appears as an EOA
